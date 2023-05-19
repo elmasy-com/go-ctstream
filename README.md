@@ -1,5 +1,7 @@
 # go-ctstream
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/elmasy-com/go-ctstream.svg)](https://pkg.go.dev/github.com/elmasy-com/go-ctstream)
+[![Go Report Card](https://goreportcard.com/badge/github.com/elmasy-com/go-ctstream)](https://goreportcard.com/report/github.com/elmasy-com/go-ctstream)
 
 ## Example
 
