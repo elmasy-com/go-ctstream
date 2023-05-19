@@ -127,7 +127,7 @@ func (s *Scanner) fetcher() {
 
 					entry, err := rawEntry.ToLogEntry()
 					if err != nil {
-						s.ErrChan <- fmt.Errorf("failed to convert raw to leg entry: %w", err)
+						s.ErrChan <- fmt.Errorf("failed to convert raw to log entry: %w", err)
 						s.cancel()
 						return
 					}
