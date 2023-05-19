@@ -176,6 +176,7 @@ func (s *Scanner) startBackground(fetcherNum int) {
 // Any error will gracefully stops the scanner and returned in the Scanner.ErrChan. Multiple errors are possible.
 // fetcherNum is the number of concurrent fetcher.
 // If skipPrecert is true, than EntryChan contains only leaf certificates.
+// There is no need to stop if error returned in Scanner.ErrChan, fatal errors automatically stops the scanner.
 //
 // Returns ErrNothingToDo if the start index is equal to the last index.
 func NewScanner(ctx context.Context, log *Log, start int, fetcherNum int, skipPrecert bool) (*Scanner, error) {
