@@ -2,12 +2,15 @@ package ctstream
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"sync"
 
 	ct "github.com/google/certificate-transparency-go"
 	"github.com/google/certificate-transparency-go/x509"
 )
+
+var ErrNothingToDo = errors.New("nothing to do")
 
 type indexRange struct {
 	Start int64
@@ -170,6 +173,8 @@ func (s *Scanner) startBackground(fetcherNum int) {
 // Any error will gracefully stops the scanner and returned in the Scanner.ErrChan. Multiple errors are possible.
 // fetcherNum is the number of concurrent fetcher.
 // If skipPrecert is true, than EntryChan contains only leaf certificates.
+//
+// Returns ErrNothingToDo if the start index is equal to the last index.
 func NewScanner(ctx context.Context, log *Log, start int, fetcherNum int, skipPrecert bool) (*Scanner, error) {
 
 	if log == nil {
@@ -177,6 +182,20 @@ func NewScanner(ctx context.Context, log *Log, start int, fetcherNum int, skipPr
 	}
 	if fetcherNum == 0 {
 		return nil, fmt.Errorf("fetcher is zero")
+	}
+
+	logSize, err := log.Size()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get log size: %w", err)
+	}
+
+	if start >= logSize-1 {
+		return nil, ErrNothingToDo
+	}
+
+	batchSize, err := log.BatchSize()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get batch size: %w", err)
 	}
 
 	scnnr := Scanner{}
@@ -195,16 +214,8 @@ func NewScanner(ctx context.Context, log *Log, start int, fetcherNum int, skipPr
 
 	scnnr.wg = new(sync.WaitGroup)
 
-	logSize, err := log.Size()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get log size: %w", err)
-	}
 	scnnr.End = logSize
 
-	batchSize, err := log.BatchSize()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get batch size: %w", err)
-	}
 	scnnr.BatchSize = batchSize
 
 	go scnnr.startBackground(fetcherNum)
