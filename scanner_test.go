@@ -41,7 +41,7 @@ func TestNewScanner(t *testing.T) {
 		t.Fatalf("Failed to find Oak2024H2 log\n")
 	}
 
-	scanner, err := NewScanner(log, 0, 20, false)
+	scanner, err := NewScanner(context.TODO(), log, 0, 20, false)
 	if err != nil {
 		t.Fatalf("Failed: %s\n", err)
 	}

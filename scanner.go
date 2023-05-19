@@ -170,7 +170,7 @@ func (s *Scanner) startBackground(fetcherNum int) {
 // Any error will gracefully stops the scanner and returned in the Scanner.ErrChan. Multiple errors are possible.
 // fetcherNum is the number of concurrent fetcher.
 // If skipPrecert is true, than EntryChan contains only leaf certificates.
-func NewScanner(log *Log, start int, fetcherNum int, skipPrecert bool) (*Scanner, error) {
+func NewScanner(ctx context.Context, log *Log, start int, fetcherNum int, skipPrecert bool) (*Scanner, error) {
 
 	if log == nil {
 		return nil, fmt.Errorf("log is nil")
@@ -191,7 +191,7 @@ func NewScanner(log *Log, start int, fetcherNum int, skipPrecert bool) (*Scanner
 	scnnr.ErrChan = make(chan error, fetcherNum+1)
 	scnnr.EntryChan = make(chan *Entry)
 
-	scnnr.ctx, scnnr.cancel = context.WithCancel(context.Background())
+	scnnr.ctx, scnnr.cancel = context.WithCancel(ctx)
 
 	scnnr.wg = new(sync.WaitGroup)
 
