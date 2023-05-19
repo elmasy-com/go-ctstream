@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 	"sync"
 
 	ct "github.com/google/certificate-transparency-go"
@@ -128,8 +129,10 @@ func (s *Scanner) fetcher() {
 					entry, err := rawEntry.ToLogEntry()
 					if err != nil {
 						s.ErrChan <- fmt.Errorf("failed to convert raw to log entry: %w", err)
-						s.cancel()
-						return
+						if !strings.Contains(err.Error(), "NonFatalErrors") {
+							s.cancel()
+							return
+						}
 					}
 
 					e := Entry{Index: int(entry.Index), Precertificate: rawEntry.Leaf.TimestampedEntry.EntryType == ct.PrecertLogEntryType}
