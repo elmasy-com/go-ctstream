@@ -61,4 +61,8 @@ func TestNewScanner(t *testing.T) {
 	scanner.Stop()
 
 	t.Logf("Total log: %d\n", totalNum)
+
+	if scanner.End != totalNum {
+		t.Fatalf("Failed: size and counted differs: %d / %d\n", scanner.End, totalNum)
+	}
 }
