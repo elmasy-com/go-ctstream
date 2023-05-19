@@ -168,6 +168,8 @@ func (s *Scanner) startBackground(fetcherNum int) {
 // NewScanner creates and starts a log scanner.
 // The fparsed entries are returned in the Scanner.EntryChan channale.
 // Any error will gracefully stops the scanner and returned in the Scanner.ErrChan. Multiple errors are possible.
+// fetcherNum is the number of concurrent fetcher.
+// If skipPrecert is true, than EntryChan contains only leaf certificates.
 func NewScanner(log *Log, start int, fetcherNum int, skipPrecert bool) (*Scanner, error) {
 
 	if log == nil {
